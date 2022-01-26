@@ -1,0 +1,188 @@
+---
+
+- name: Setting host facts
+  hosts: all
+  gather_facts: true
+
+  tasks:
+    - name: Return command output to registered var
+      ansible.builtin.command: dpkg --print-architecture
+      register: dpkg_architecture_output
+
+    - name: Setting host facts
+      ansible.builtin.set_fact:
+        user_id: "{{ ansible_user_id }}"
+        distribution: "{{ ansible_distribution  | lower }}"
+        distribution_release: "{{ ansible_distribution_release  | lower }}"
+        distribution_version: "{{ ansible_distribution_version }}"
+        architecture: "{{ ansible_architecture }}"  # e.g. x86_64
+        dpkg_architecture: "{{ dpkg_architecture_output.stdout }}"  # e.g. amd64
+
+    - name: Print host facts
+      ansible.builtin.debug:
+        msg: >
+          User: {{ user_id }},
+          Distribution: {{ distribution }},
+          Release: {{ distribution_release }},
+          Version: {{ distribution_version }},
+          Architecture: {{ architecture }},
+          dpkg architecture: {{ dpkg_architecture }}.
+
+
+- name: Copy files to the host
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Copy .bashrc
+      ansible.builtin.copy:
+        src: files/.bashrc
+        dest: ~/.bashrc
+        mode: '0644'
+
+    - name: Copy .bash_aliases
+      ansible.builtin.copy:
+        src: files/.bash_aliases
+        dest: ~/.bash_aliases
+        mode: '0644'
+
+    - name: Copy .inputrc
+      ansible.builtin.copy:
+        src: files/.inputrc
+        dest: ~/.inputrc
+        mode: '0644'
+
+    - name: Create a directory if it does not exist
+      ansible.builtin.file:
+        path: ~/.config/micro/
+        state: directory
+
+    - name: Copy micro editor settings
+      ansible.builtin.copy:
+        src: files/micro-settings.json
+        dest: ~/.config/micro/settings.json
+        mode: '0644'
+
+
+- name: Install packages on the host
+  hosts: all
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Install packages
+      ansible.builtin.apt:
+        pkg:
+          - curl
+          - git
+          - gnupg
+          - htop
+          - jq
+          - make
+          - net-tools
+          - python3-pip
+          - python3-venv
+          - python3-setuptools
+          - tmux
+          - xclip
+        update_cache: true
+
+    - name: Add Docker signing key
+      ansible.builtin.apt_key:
+        id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
+        url: https://download.docker.com/linux/{{ distribution }}/gpg
+        keyring: /usr/share/keyrings/docker-archive-keyring.gpg
+
+    - name: Add Docker repository
+      ansible.builtin.apt_repository:
+        repo: deb [arch={{ dpkg_architecture }} signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/{{ distribution }} {{ distribution_release }} stable
+        update_cache: false
+
+    - name: Update package indexes
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Install Docker
+      ansible.builtin.apt:
+        pkg:
+          - docker-ce
+
+    - name: Ensure group "docker" exists
+      ansible.builtin.group:
+        name: docker
+
+    - name: Add the user to the supplementary group(s)
+      ansible.builtin.user:
+        name: "{{ user_id }}"
+        groups: docker
+        append: true
+
+    # - name: Download Docker Compose v1
+    #   ansible.builtin.get_url:
+    #     url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
+    #     dest: /usr/local/bin/docker-compose
+    #     checksum: sha256:f3f10cf3dbb8107e9ba2ea5f23c1d2159ff7321d16f0a23051d68d8e2547b323
+    #     force: true
+
+    # - name: Apply executable permissions to the binary
+    #   ansible.builtin.file:
+    #     path: /usr/local/bin/docker-compose
+    #     mode: a+x
+
+    - name: Create a directory if it does not exist
+      ansible.builtin.file:
+        path: /usr/local/lib/docker/cli-plugins/
+        state: directory
+
+    - name: Download Docker Compose v2
+      ansible.builtin.get_url:
+        url: https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-linux-x86_64
+        dest: /usr/local/lib/docker/cli-plugins/docker-compose
+        checksum: sha256:f15a7cd54a85f760a8ece92da63fb85b93036c72ead8056391b8a3fe9dc73134
+        force: true
+
+    - name: Apply executable permissions to the binary
+      ansible.builtin.file:
+        path: /usr/local/lib/docker/cli-plugins/docker-compose
+        mode: a+x
+
+    - name: Download Docker Compose Switch
+      ansible.builtin.get_url:
+        url: https://github.com/docker/compose-switch/releases/download/v1.0.4/docker-compose-linux-amd64
+        dest: /usr/local/bin/docker-compose
+        checksum: sha256:08229ed196de5ce08228d194e2e2379cb6cb7959fe8dfe70859352d2fd9d21a5
+        force: true
+
+    - name: Apply executable permissions to the binary
+      ansible.builtin.file:
+        path: /usr/local/bin/docker-compose
+        mode: a+x
+
+    - name: Download micro editor .deb file
+      ansible.builtin.get_url:
+        url: https://github.com/zyedidia/micro/releases/download/v2.0.10/micro-2.0.10-amd64.deb
+        dest: /tmp/micro-editor-amd64.deb
+        checksum: sha256:5ceb0203f715323ca88a2f26023142947fa1e919882855bc73f5d8a1bcd66dec
+        force: true
+
+    - name: Install micro editor
+      ansible.builtin.apt:
+        deb: /tmp/micro-editor-amd64.deb
+
+    - name: Install Docker module for Python
+      ansible.builtin.pip:
+        name: docker
+
+
+- name: Upgrade packages on the host
+  hosts: all
+  become: true
+  gather_facts: false
+
+  tasks:
+    - name: Upgrade the OS
+      ansible.builtin.apt:
+        upgrade: dist
+
+    - name: Reboot the machine
+      ansible.builtin.reboot:

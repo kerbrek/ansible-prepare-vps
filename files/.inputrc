@@ -1,0 +1,40 @@
+# This file controls the behaviour of line input editing for
+# programs that use the GNU Readline library.
+#
+# Lines beginning with ‘#’ are comments.
+# Lines beginning with ‘$’ indicate conditional constructs.
+#
+# First, include any system-wide bindings and variable
+# assignments from /etc/inputrc
+
+## Command Line Editing Manual
+## https://www.gnu.org/software/bash/manual/html_node/Command-Line-Editing.html
+
+$include /etc/inputrc
+
+
+## Variable Settings
+## https://www.gnu.org/software/bash/manual/html_node/Readline-Init-File-Syntax.html
+
+## never rings the bell
+set bell-style none
+
+## perform filename matching and completion in a case-insensitive fashion
+set completion-ignore-case on
+
+## words which have more than one possible completion cause the matches to be
+## listed immediately instead of ringing the bell
+set show-all-if-ambiguous on
+
+
+## Mappings For Manipulating The History
+## https://www.gnu.org/software/bash/manual/html_node/Commands-For-History.html
+## https://stackoverflow.com/questions/1030182/
+
+## mappings for "up" and "down" to search through the history
+"\e[A": history-search-backward
+"\e[B": history-search-forward
+
+## mappings for "page up" and "page down" to move through the history
+"\e[5~": previous-history
+"\e[6~": next-history
