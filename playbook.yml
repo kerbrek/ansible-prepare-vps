@@ -87,6 +87,17 @@
           - xclip
         update_cache: true
 
+    - name: Download micro editor .deb file
+      ansible.builtin.get_url:
+        url: https://github.com/zyedidia/micro/releases/download/v2.0.10/micro-2.0.10-amd64.deb
+        dest: /tmp/micro-editor-amd64.deb
+        checksum: sha256:5ceb0203f715323ca88a2f26023142947fa1e919882855bc73f5d8a1bcd66dec
+        force: true
+
+    - name: Install micro editor
+      ansible.builtin.apt:
+        deb: /tmp/micro-editor-amd64.deb
+
     - name: Add Docker signing key
       ansible.builtin.apt_key:
         id: 9DC858229FC7DD38854AE2D88D81803C0EBFCD88
@@ -157,17 +168,6 @@
       ansible.builtin.file:
         path: /usr/local/bin/docker-compose
         mode: a+x
-
-    - name: Download micro editor .deb file
-      ansible.builtin.get_url:
-        url: https://github.com/zyedidia/micro/releases/download/v2.0.10/micro-2.0.10-amd64.deb
-        dest: /tmp/micro-editor-amd64.deb
-        checksum: sha256:5ceb0203f715323ca88a2f26023142947fa1e919882855bc73f5d8a1bcd66dec
-        force: true
-
-    - name: Install micro editor
-      ansible.builtin.apt:
-        deb: /tmp/micro-editor-amd64.deb
 
     - name: Install Docker module for Python
       ansible.builtin.pip:
