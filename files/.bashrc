@@ -116,6 +116,8 @@ if ! shopt -oq posix; then
 fi
 
 
+export EDITOR=micro
+
 ## bash git prompt support
 ## (*) unstaged changes
 ## (+) staged changes
