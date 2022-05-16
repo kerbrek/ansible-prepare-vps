@@ -113,10 +113,11 @@
       ansible.builtin.apt:
         update_cache: true
 
-    - name: Install Docker
+    - name: Install Docker and Compose
       ansible.builtin.apt:
         pkg:
           - docker-ce
+          - docker-compose-plugin
 
     - name: Ensure group "docker" exists
       ansible.builtin.group:
@@ -139,23 +140,6 @@
     #   ansible.builtin.file:
     #     path: /usr/local/bin/docker-compose
     #     mode: a+x
-
-    - name: Create a directory if it does not exist
-      ansible.builtin.file:
-        path: /usr/local/lib/docker/cli-plugins/
-        state: directory
-
-    - name: Download Docker Compose v2
-      ansible.builtin.get_url:
-        url: https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-linux-x86_64
-        dest: /usr/local/lib/docker/cli-plugins/docker-compose
-        checksum: sha256:f15a7cd54a85f760a8ece92da63fb85b93036c72ead8056391b8a3fe9dc73134
-        force: true
-
-    - name: Apply executable permissions to the binary
-      ansible.builtin.file:
-        path: /usr/local/lib/docker/cli-plugins/docker-compose
-        mode: a+x
 
     - name: Download Docker Compose Switch
       ansible.builtin.get_url:
