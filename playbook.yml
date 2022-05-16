@@ -153,6 +153,9 @@
         path: /usr/local/bin/docker-compose
         mode: a+x
 
+    - name: Install Grafana Loki Docker plugin
+      ansible.builtin.command: docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions
+
     - name: Install Docker module for Python
       ansible.builtin.pip:
         name: docker
