@@ -12,8 +12,8 @@
     - name: Setting host facts
       ansible.builtin.set_fact:
         user_id: "{{ ansible_user_id }}"
-        distribution: "{{ ansible_distribution  | lower }}"
-        distribution_release: "{{ ansible_distribution_release  | lower }}"
+        distribution: "{{ ansible_distribution | lower }}"
+        distribution_release: "{{ ansible_distribution_release | lower }}"
         distribution_version: "{{ ansible_distribution_version }}"
         architecture: "{{ ansible_architecture }}"  # e.g. x86_64
         dpkg_architecture: "{{ dpkg_architecture_output.stdout }}"  # e.g. amd64
@@ -84,6 +84,7 @@
           - python3-venv
           - python3-setuptools
           - tmux
+          - ufw
           - xclip
         update_cache: true
 
