@@ -132,9 +132,9 @@
 
     - name: Download Docker Compose Switch
       ansible.builtin.get_url:
-        url: https://github.com/docker/compose-switch/releases/download/v1.0.4/docker-compose-linux-amd64
+        url: https://github.com/docker/compose-switch/releases/download/v1.0.5/docker-compose-linux-amd64
         dest: /usr/local/bin/docker-compose
-        checksum: sha256:08229ed196de5ce08228d194e2e2379cb6cb7959fe8dfe70859352d2fd9d21a5
+        checksum: sha256:b40e078fb216ddac87fcf40cbb09b60286e6a21a51d5ad7f777c6d4dbea4eab4
         force: true
 
     - name: Apply executable permissions to the binary
