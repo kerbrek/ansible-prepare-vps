@@ -130,18 +130,6 @@
         groups: docker
         append: true
 
-    # - name: Download Docker Compose v1
-    #   ansible.builtin.get_url:
-    #     url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
-    #     dest: /usr/local/bin/docker-compose
-    #     checksum: sha256:f3f10cf3dbb8107e9ba2ea5f23c1d2159ff7321d16f0a23051d68d8e2547b323
-    #     force: true
-
-    # - name: Apply executable permissions to the binary
-    #   ansible.builtin.file:
-    #     path: /usr/local/bin/docker-compose
-    #     mode: a+x
-
     - name: Download Docker Compose Switch
       ansible.builtin.get_url:
         url: https://github.com/docker/compose-switch/releases/download/v1.0.4/docker-compose-linux-amd64
