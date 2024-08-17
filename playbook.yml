@@ -92,9 +92,9 @@
 
     - name: Download micro editor .deb file
       ansible.builtin.get_url:
-        url: https://github.com/zyedidia/micro/releases/download/v2.0.12/micro-2.0.12-amd64.deb
+        url: https://github.com/zyedidia/micro/releases/download/v2.0.13/micro-2.0.13-amd64.deb
         dest: /tmp/micro-editor-amd64.deb
-        checksum: sha256:075bff84f3754a302da635c1bb801f9f4bc61b6b09e0b42517f65063c5aca4cd
+        checksum: sha256:acc00b346ea37eaf6be9c0525e9ebe04b49993532398ab7c568219a10a223300
         force: true
         mode: '0644'
 
