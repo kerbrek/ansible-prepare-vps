@@ -75,6 +75,7 @@
     - name: Install packages
       ansible.builtin.apt:
         pkg:
+          - btop
           - curl
           - git
           - gnupg
@@ -86,6 +87,7 @@
           - python3-venv
           - python3-setuptools
           - tmux
+          - tree
           - ufw
           - xclip
         update_cache: true
