@@ -128,19 +128,19 @@ if command -v __git_ps1 1>/dev/null 2>&1; then
     export GIT_PS1_SHOWSTASHSTATE=true
     export GIT_PS1_SHOWUNTRACKEDFILES=true
     export GIT_PS1_SHOWUPSTREAM="auto"
-    PS1='\[\033]0;PROD \u@\h: \w\007\]\[\033[01;41m\]PROD\[\033[00m\] ${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\[\033[01;33m\]$(__git_ps1 " (%s)")\[\033[00m\]\n\[\033[31m\]└─\[\033[00m\] \[\033[01;31m\]\$\[\033[00m\] '
+    PS1='\[\033]0;VPS \u@\h: \w\007\]\[\033[01;41m\]VPS\[\033[00m\] ${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\[\033[01;33m\]$(__git_ps1 " (%s)")\[\033[00m\]\n\[\033[31m\]└\[\033[00m\] \[\033[01;31m\]\$\[\033[00m\] '
 else
-    PS1='\[\033]0;PROD \u@\h: \w\007\]\[\033[01;41m\]PROD\[\033[00m\] ${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\n\[\033[31m\]└─\[\033[00m\] \[\033[01;31m\]\$\[\033[00m\] '
+    PS1='\[\033]0;VPS \u@\h: \w\007\]\[\033[01;41m\]VPS\[\033[00m\] ${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\n\[\033[31m\]└\[\033[00m\] \[\033[01;31m\]\$\[\033[00m\] '
 fi
 
 ## https://stackoverflow.com/a/50078642/6475258
 ## Inverts console colours so that we know that we are in a remote server.
-setterm --inversescreen on
+# setterm --inversescreen on
 
 ## This ensures we restore the console colours after exiting.
-function restore_screen_colours {
-    if [ $SHLVL -eq 1 ]; then
-        setterm --inversescreen off
-    fi
-}
-trap restore_screen_colours EXIT
+# function restore_screen_colours {
+#     if [ $SHLVL -eq 1 ]; then
+#         setterm --inversescreen off
+#     fi
+# }
+# trap restore_screen_colours EXIT
