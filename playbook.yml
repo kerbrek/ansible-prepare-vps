@@ -8,6 +8,7 @@
     - name: Return command output to registered var
       ansible.builtin.command: dpkg --print-architecture
       register: dpkg_architecture_output
+      changed_when: true
 
     - name: Setting host facts
       ansible.builtin.set_fact:
@@ -56,6 +57,7 @@
       ansible.builtin.file:
         path: ~/.config/micro/
         state: directory
+        mode: '0755'
 
     - name: Copy micro editor settings
       ansible.builtin.copy:
@@ -94,6 +96,7 @@
         dest: /tmp/micro-editor-amd64.deb
         checksum: sha256:075bff84f3754a302da635c1bb801f9f4bc61b6b09e0b42517f65063c5aca4cd
         force: true
+        mode: '0644'
 
     - name: Install micro editor
       ansible.builtin.apt:
@@ -136,14 +139,11 @@
         dest: /usr/local/bin/docker-compose
         checksum: sha256:b40e078fb216ddac87fcf40cbb09b60286e6a21a51d5ad7f777c6d4dbea4eab4
         force: true
-
-    - name: Apply executable permissions to the binary
-      ansible.builtin.file:
-        path: /usr/local/bin/docker-compose
-        mode: a+x
+        mode: '0755'
 
     - name: Install Grafana Loki Docker plugin
       ansible.builtin.command: docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions
+      changed_when: true
 
     - name: Install Docker module for Python
       ansible.builtin.pip:
