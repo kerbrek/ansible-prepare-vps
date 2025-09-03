@@ -35,11 +35,12 @@
   gather_facts: false
 
   tasks:
-    - name: Copy .bashrc
-      ansible.builtin.copy:
-        src: files/.bashrc
-        dest: ~/.bashrc
-        mode: '0644'
+    - name: Append block to .bashrc
+      ansible.builtin.blockinfile:
+        path: ~/.bashrc
+        append_newline: true
+        prepend_newline: true
+        block: "{{ lookup('ansible.builtin.file', './files/.bashrc_append') }}"
 
     - name: Copy .bash_aliases
       ansible.builtin.copy:
@@ -82,6 +83,7 @@
           - htop
           - jq
           - make
+          - micro
           - net-tools
           - python3-pip
           - python3-venv
@@ -92,17 +94,17 @@
           - xclip
         update_cache: true
 
-    - name: Download micro editor .deb file
-      ansible.builtin.get_url:
-        url: https://github.com/zyedidia/micro/releases/download/v2.0.13/micro-2.0.13-amd64.deb
-        dest: /tmp/micro-editor-amd64.deb
-        checksum: sha256:acc00b346ea37eaf6be9c0525e9ebe04b49993532398ab7c568219a10a223300
-        force: true
-        mode: '0644'
+    # - name: Download micro editor .deb file
+    #   ansible.builtin.get_url:
+    #     url: https://github.com/zyedidia/micro/releases/download/v2.0.13/micro-2.0.13-amd64.deb
+    #     dest: /tmp/micro-editor-amd64.deb
+    #     checksum: sha256:acc00b346ea37eaf6be9c0525e9ebe04b49993532398ab7c568219a10a223300
+    #     force: true
+    #     mode: '0644'
 
-    - name: Install micro editor
-      ansible.builtin.apt:
-        deb: /tmp/micro-editor-amd64.deb
+    # - name: Install micro editor
+    #   ansible.builtin.apt:
+    #     deb: /tmp/micro-editor-amd64.deb
 
     - name: Add Docker signing key
       ansible.builtin.apt_key:
@@ -143,13 +145,14 @@
         force: true
         mode: '0755'
 
-    - name: Install Grafana Loki Docker plugin
-      ansible.builtin.command: docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions
-      changed_when: true
+    # - name: Install Grafana Loki Docker plugin
+    #   ansible.builtin.command: docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions
+    #   changed_when: true
 
-    - name: Install Docker module for Python
-      ansible.builtin.pip:
-        name: docker
+    # - name: Install Docker module for Python
+    #   ansible.builtin.pip:
+    #     break_system_packages: true
+    #     name: docker
 
 
 - name: Upgrade packages on the host
